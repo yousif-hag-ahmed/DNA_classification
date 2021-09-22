@@ -27,21 +27,75 @@ both 1 and two are found under NN + CNN .ipynb.
 3/2d CNN trained on word2vec embeddings of k-mers:
 
 here I used gensim to generate the w2vec vecs using all the chars in the sequences . I then used Word2Vec(DNA_list , vector_size = 10 , min_count= 1 ) vector_size of 10 . I used iteration to generate the final DNA vectorized model which is feed to a dataloader .I do some croping to reduce the size of the DNA sequ to 600*10 after padding .I then reshape to get the 3 chennel image like shape of 3,40,50 .the same is done the test data without the training part . this is then inputed to a Conv . Here I use a pretrained model (structure only ) of the resnet18 , I do this to get a deep optimized CNN structure .
+
+
+gensim is also updated to a newer version which might cause some issues so please update before starting the code using !pip install --update gensim 
+
+file under word2vec_with_cnn_.ipynb
+
+4/I also used a 2dConv nural net on a different type of one hot encodding 
+here I use the following dic 
+self.dic= {'-':[0,0,0,0],'A' :[1,0,0,0] , 'C':[0,1,0,0],'T':[0,0,1,0],'G':[0,0,0,1]}
+
+I then multiply with the index of each char ,
+
+using this and a resnet structure I got my best results in the competition 
+
+file under transferLearning__kaggleComp_customPreTrain[0,0,0,1]bym.ipynb 
+
+
+5/ I also used a LSTM (RNN) using the same encodding in (4)
+class RNN(nn.Module):
+    def __init__(self, input_size , hidden_size , num_layers , num_classes):
+        super(RNN,self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size , hidden_size , num_layers,batch_first= True)
+        self.fc = nn.Linear(hidden_size*sequence_length ,num_classes)
+        
+        
+    def forward(self,x):
+        #print(x.shape) batchSize,72,72
+        h0 = torch.zeros(self.num_layers , x.size(0), self.hidden_size).to(device)
+        c0 = torch.zeros(self.num_layers , x.size(0) , self.hidden_size).to(device)
+        #print(h0.shape) 2,15,275
+        #print(x.shape)
+        
+        #Forward Prop 
+        
+        out,_ =  self.lstm(x,(h0,c0))
+        #print(out.shape)15 , 72,256
+        out = out.reshape(out.shape[0] ,-1)
+        #print(out.shape) 15,18432
+        out = self.fc(out)
+        #print(out.shape) 15 ,1214
+        return out 
+        
+which yielded a good result in the data of about 94% . I think I could do some hyperparameter tunning and get better results 
+
+6/ Variational Autoencoding embedding with Neural Net 
+
+as disscused in the lectures , I used a variational Autoencodder to produce a 50 dim representation of each DNA sequence , this is then feed to a dense nural net .
+
+
+file under Variational AutoEncoder embedding with NN.ipynb
+
+
+# how to run the code 
+
+set the path by downloading the data folder 
 train_features_path = '/train_features.csv'
 test_features_path = '/test_features.csv'
 train_labels_path = '/train_labels.csv'
 test_labels_path = '/train_labels - Copy.csv'
-
-gensim is also updated to a newer version which might cause some issues so please update before starting the code using !pip install --update gensim 
-
-4/
-
-# how to run the code 
-
 to run the customataset you need to download the data folder and extract it , then for the feature data set please :
 fulldataset = ( train_features.csv(path), train_labels.csv (path) ) 
 
 testdataset = ( test_features.csv(path) , train_labels_copy.csv(path))
 
 
-3/ 
+
+
+
+for all of the methods I use a softmax to determine the max probability of each seq and then determine on that the probability the sequence to be new dna .
+
