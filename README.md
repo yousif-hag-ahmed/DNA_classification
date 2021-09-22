@@ -75,7 +75,7 @@ which yielded a good result in the data of about 94% . I think I could do some h
 
 6/ Variational Autoencoding embedding with Neural Net 
 
-as disscused in the lectures , I used a variational Autoencodder to produce a 50 dim representation of each DNA sequence , this is then feed to a dense nural net .
+as disscused in the lectures , I used a variational Autoencodder to produce a 50 dim representation of each DNA sequence , this is then feed to a dense neural net .
 
 
 file under Variational AutoEncoder embedding with NN.ipynb
