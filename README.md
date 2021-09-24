@@ -20,20 +20,20 @@ I choose a 1296 so as to form a 36*36 square dim . I use this because I found th
 after that I use a typical simple NN .
 
 
-2/ usimg the same simple encodding in 1 I now use a cnn , I do reshaping to the output of the preprocessing to so as to be in the shape of 1,36,36 .1dconv .
+2/ usimg the same simple encodding in 1 I now use a cnn , I do reshaping to the output of the preprocessing to so as to be in the shape of 1,36,36 .1d conv with a structure of my own .
 
 both 1 and two are found under NN + CNN .ipynb.
 
 3/2d CNN trained on word2vec embeddings of k-mers:
 
-here I used gensim to generate the w2vec vecs using all the chars in the sequences . I then used Word2Vec(DNA_list , vector_size = 10 , min_count= 1 ) vector_size of 10 . I used iteration to generate the final DNA vectorized model which is feed to a dataloader .I do some croping to reduce the size of the DNA sequ to 600*10 after padding .I then reshape to get the 3 chennel image like shape of 3,40,50 .the same is done the test data without the training part . this is then inputed to a Conv . Here I use a pretrained model (structure only ) of the resnet18 , I do this to get a deep optimized CNN structure .
+here I used gensim to generate the w2vec vecs using all the chars in the sequences ( both trainAnd test ) . I then used Word2Vec(DNA_list , vector_size = 10 , min_count= 1 ) vector_size of 10 . I used iteration to generate the final DNA vectorized model which is feed to a dataloader .I do some croping to reduce the size of the DNA sequ to 600*10 after padding .I then reshape to get the 3 chennel image like shape of 3,40,50 .the same is done to the test data without the training part . this is then inputed to a ConvNEt . Here I use a pretrained model (structure only ) of the resnet18 , I do this to get a deep optimized CNN structure .
 
 
 gensim is also updated to a newer version which might cause some issues so please update before starting the code using !pip install --update gensim 
 
 file under word2vec_with_cnn_.ipynb
 
-4/I also used a 2dConv nural net on a different type of one hot encodding 
+4/I also used a 2dConv neural net on a different type of one hot encodding 
 here I use the following dic 
 self.dic= {'-':[0,0,0,0],'A' :[1,0,0,0] , 'C':[0,1,0,0],'T':[0,0,1,0],'G':[0,0,0,1]}
 
